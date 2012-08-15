@@ -1,0 +1,15 @@
+lib/Rover.pm
+lib/Rover/Host.pm
+lib/Rover/Shell_Routines.pm
+lib/Rover/Ruleset.pm
+lib/Rover/Core.pm
+lib/Rover/Core
+lib/Rover/Core/FTP.pm
+README
+MANIFEST
+Changes
+Makefile.PL
+t/Rover.t
+scripts/rover
+scripts/rovergtk
+scripts/rovergtk.glade
