@@ -85,6 +85,8 @@ sub new {
 
   clear($self);
   register_module($self, "Rover::Core");
+  register_module($self, "Rover::CoreExtension");
+
   return bless $self, $class;
 }
 
