@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <TITLE>Rover Quick Start Guide: Installation</TITLE>
+</HEAD>
+
+<BODY>
+<A HREF="Rover-QuickStart-2.html">Next</A>
+Previous
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>
+
+<HR>
+<H2><A NAME="s1">1. Installation</A></H2>
+
+<P>
+<!-- title paragraph here -->
+Rover installs like any other perl module.  However, it is not avilable through
+CPAN, so it must be installed manually.  Follow these steps in order to get Rover
+working on your system.
+
+<P>
+<H2><A NAME="ss1.1">1.1 Dependencies</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+There is only one hard dependency for Rover, and that is
+<A HREF="http://sourceforge.net/projects/expectperl">Expect for perl</A>.  The
+easiest way to get this installed (if you do not already have it), is to let
+The Rover installation script install it for you.<BR><BR>
+
+If you already have Expect, then you should be able to install at least the
+Rover core package and the command line interface.  Rover is 100% Perl, and
+requires no C compiler to install.<BR><BR>
+
+If, however, you would like to run the graphical user interface, you need to also have the
+<A HREF="http://search.cpan.org/~mlehmann/Gtk-Perl-0.7009/Gtk/objects.pod">Gtk perl</A>
+module.  Again, the easiest way to get this is to let the Rover installation
+script install it for you.<BR><BR>
+
+<B><FONT COLOR=RED>Note</FONT></B>: If you chose to let the installer build Gtk-Perl,
+you must have the gtk+ development packages installed.  Please refer to your OS
+documentation for details on installing these.<BR><BR>
+
+<P>
+<H2><A NAME="ss1.2">1.2 Download</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+In order to download the latest copy of Rover, use the
+<A HREF="http://sourceforge.net/project/showfiles.php?group_id=118999">download section</A>
+of the SourceForge project page.<BR><BR>
+
+The file should be a gziped tar file named Rover-2.xx.tar.gz.  The xx denotes the latest
+version.
+
+
+
+<P>
+<H2><A NAME="ss1.3">1.3 Build and Install</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+After downloading Rover, extract the contents using the following syntax:
+
+<BLOCKQUOTE>
+  <CODE>
+    $ gunzip -c Rover-2.xx.tar.gz | tar xvf -
+  </CODE>
+</BLOCKQUOTE>
+
+After it is extracted, cd into the Rover-2.xx directory and install it as a normal Perl module.
+The steps for this are:
+
+<BLOCKQUOTE>
+  <CODE>
+    $ perl Makefile.PL<BR>
+    $ make<BR>
+    $ su<BR>
+    # make install<BR>
+  </CODE>
+</BLOCKQUOTE>
+
+Alternatively you can chose to have the installation script build and install the dependancies
+for you.  The install script will use CPAN to install missing perl modules.  If you have not
+used CPAN before, you will be prompted to configure it.  Here is the syntax for using this
+option:
+
+<BLOCKQUOTE>
+  <CODE>
+    $ perl Makefile.PL --install-deps
+  </CODE>
+</BLOCKQUOTE>
+
+If you chose not to install the graphical interface, but still wish to use the command line, use
+this command instead:
+
+<BLOCKQUOTE>
+  <CODE>
+    $ perl Makefile.PL --no-gtk
+  </CODE>
+</BLOCKQUOTE>
+
+The above two examples will require an additional "make" and "make install".<BR><BR>
+
+<HR>
+<!-- ----------------------------------------------------------------------------- -->
+<A HREF="Rover-QuickStart-2.html">Next</A>
+Previous
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>

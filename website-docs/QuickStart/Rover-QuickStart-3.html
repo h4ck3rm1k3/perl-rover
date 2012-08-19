@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <TITLE>Rover Quick Start Guide: Creating Rulesets</TITLE>
+</HEAD>
+
+<BODY>
+<A HREF="Rover-QuickStart-4.html">Next</A>
+<A HREF="Rover-QuickStart-2.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>
+
+<HR>
+<H2><A NAME="s3">3. Creating Rulesets</A></H2>
+
+<P>
+<!-- title paragraph here -->
+Rulesets are a fundimental concept for Rover development.  This section
+describes what rulesets are, how to create them, and how to use and reuse them.
+
+<P>
+<H2><A NAME="ss3.1">3.1 What is a Ruleset?</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+Rover executes commands in groups called a Ruleset.  Each ruleset consists
+of actions to be taken against a remote machine.  These rulests are
+then configured to be ran against an operating system type (OS).<BR><BR>
+
+For example, we create a ruleset call "Unix_Uptime" that executes the uptime
+command on a UNIX machine.  We can then specify to run the ruleset on all
+OS types, or we can chose to run it only on Linux, AIX, SunOS, and HP-UX
+machines.<BR><BR>
+
+The contents of a ruleset are really function calls using Perl syntax.  The
+functions used are called ruleset commands, which are specifically imported
+in order to perform specialized tasks.  The most common is the command
+execute().  Here is an example of a ruleset definition using the execute()
+command:
+
+<BLOCKQUOTE>
+  <CODE>
+    Unix_Uptime:{<BR>
+      <DD>execute(uptime);<BR>
+    };
+  </CODE>
+</BLOCKQUOTE>
+
+
+<P>
+<H2><A NAME="ss3.2">3.2 Available Commands</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+Ruleset commands are imported to Rover using modules.  Rover ships with several
+modules which supply everything you'll probably ever need.  Here are the supplied
+modules and the commands they provide:
+
+<BLOCKQUOTE>
+  <P>
+  <B>Run_Commands</B>: Execute and send commands
+  <UL>
+    <LI>execute() - Execute a single command, returning to the prompt
+    <LI>send() - Send text followed by a return, ignoring the response
+  </UL>
+
+  <P>
+  <B>File_Transfer</B>: Transfer files to and from remote machine
+  <UL>
+    <LI>get_file() - Get a file from a remote machine
+    <LI>put_file() - Copy a local file to the remote machine
+  </UL>
+
+  <P>
+  <B>User_Admin</B>: User administration commands
+  <UL>
+    <LI>userlist() - List usernames
+    <LI>grouplist() - List group names
+    <LI>useradd() - Add a local user account
+    <LI>userdel() - Delete a local user account
+    <LI>groupadd() - Add a local group
+    <LI>groupdel() - Delete a local group
+    <LI>unlock() - Set the password and unlock a user account
+  </UL>
+
+  <P>
+  <B>Password</B>: Run passwd command as a normal user
+  <UL>
+    <LI>passwd() - Change the password for the current user
+  </UL>
+
+
+</BLOCKQUOTE>
+
+
+<P>
+<H2><A NAME="ss3.3">3.3 Creating Rulesets</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+As an example, we are going to create a ruleset called "Unix_Uptime".  This ruleset
+will simply execute the command "uptime" on a remote machine.  We will be creating
+The command two ways, first using the command line script "rover", then using
+"rovergtk".
+
+<H3>Command Line</H3>
+From the command line, we can create rulesets using the interactive shell of "rover".
+Issue the following command in order to enter the shell:
+
+<BLOCKQUOTE>
+  <CODE>
+    $ rover -s
+  </CODE>
+</BLOCKQUOTE>
+
+Once in the shell you can type help for a list of available commands.  Next, create
+the ruleset "Unix_Uptime" using the following syntax:
+
+<BLOCKQUOTE>
+  <CODE>
+    <U>rover&gt;</U> new Unix_Uptime
+  </CODE>
+</BLOCKQUOTE>
+
+This will launch a VI session where we can edit the ruleset.  Enter into insert mode
+(press "i") and type the following:
+
+<BLOCKQUOTE>
+  <CODE>
+    execute(uptime);
+  </CODE>
+</BLOCKQUOTE>
+
+Save the ruleset as you would normally save a file in vi (escape, then ZZ or :wq).<BR><BR>
+
+You have just created a ruleset that will run the command "uptime" on remote machines.
+However, this ruleset will not be available the next time you run rover unless you save
+it to your Rover config.  Do that by using the "save" command within the shell:
+
+<BLOCKQUOTE>
+  <CODE>
+    <U>rover&gt;</U> save<BR>
+    <U>rover&gt;</U> exit
+  </CODE>
+</BLOCKQUOTE>
+
+<H3>Graphical Interface</H3>
+Launch the graphical interface by typing "rovergtk" at the command line.  Follow normal
+procedures for setting your DISPLAY variable, if applicable.<BR><BR>
+
+In order to launch the ruleset configuration window, select Config from the main menu,
+then Rulesets.  The following window will appear:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen3.jpg">
+</CENTER><BR>
+
+Within this window we can create a new ruleset, save it, and modify existing rulesets.
+At the top of the display is a "Ruleset Name" text entry.  This is where you define the
+ruleset name.  Left center is a listing of all the modlules and their exported commands.
+Right center is the text area for editing the current ruleset.<BR><BR>
+
+The bottom row of buttons allows you to load an existing ruleset, save a ruleset in the
+working configuration, delete a ruleset, and start over with a new ruleset.<BR><BR>
+
+For this example, we want to type "Unix_Uptime" in the Ruleset Name entry box.  Then 
+highlight the "execute" command from the left window and click the "Append" button.  A new
+window will appear, type "uptime" in the text box, then press Ok.<BR><BR>
+
+Your window should now look like this:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen4.jpg">
+</CENTER><BR>
+
+Press the "Save" button on the bottom row and close the ruleset window.  The final step
+is to save the working configuration by selecting File, Save from the main menu.
+
+<P>
+<H2><A NAME="ss3.4">3.4 Using Rulesets</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+Once a ruleset is created and saved, it is used by assigning it an OS type.  Available
+OS types are as follows:
+
+<BLOCKQUOTE>
+  <CODE>
+    ALL UNKNOWN Linux AIX SunOS HP_UX FreeBSD OpenBSD Windows
+  </CODE>
+</BLOCKQUOTE>
+
+Using the command line, you can enter an interactive shell to modify the runlist.
+Alternatively you can use the command line switch "-r|--ruleset &lt;name&gt;" to specify
+a ruleset be ran on all OS types.  See "man rover" for more details.<BR><BR>
+
+Here is an example of using the shell to modify what rulesets will be ran on Linux
+machines.
+
+<BLOCKQUOTE>
+  <CODE>
+    <U>rover&gt;</U> <B>runmod Linux</B><BR>
+    Change runlist for Linux:<BR><BR>
+
+    Chose one or more of the following rulesets, enter blank line to finish<BR>
+    Unix_Uptime<BR><BR>
+
+    <U>Linux&gt;</U> <B>Unix_Uptime</B><BR>
+    <U>Linux&gt;</U><BR><BR>
+
+    <U>rover&gt;</U><BR>
+  </CODE>
+</BLOCKQUOTE>
+
+For the graphical user interface, you can add a ruleset to an OS by selecting the ruleset,
+checking the OS or OS's you wish to run that on, and clicking the "Add" button.<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen2.jpg">
+</CENTER><BR>
+
+The above image is the main screen for rovergtk.  The left half of the window is devoted
+to configuring the runlist.  In this example, we have already configured the Linux OS to
+run the Unix_Uptime ruleset (bottom window).<BR><BR>
+
+We have also highlighted the Unix_Uptime ruleset in the Ruleset window (top), and checked
+the AIX, SunOS, and HP_UX operating systems in the target OS window (middle).
+If we were to then click on the "Add" button under the Target OS's, we would assign
+the Unix_Uptime ruleset to those OS types as well.
+
+
+<HR>
+<!-- ----------------------------------------------------------------------------- -->
+<A HREF="Rover-QuickStart-4.html">Next</A>
+<A HREF="Rover-QuickStart-2.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>

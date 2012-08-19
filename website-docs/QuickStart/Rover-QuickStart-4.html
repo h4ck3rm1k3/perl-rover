@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <TITLE>Rover Quick Start Guide: Running Rover</TITLE>
+</HEAD>
+
+<BODY>
+<A HREF="Rover-QuickStart-5.html">Next</A>
+<A HREF="Rover-QuickStart-3.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>
+
+<HR>
+<H2><A NAME="s4">4. Running Rover</A></H2>
+
+<P>
+<!-- title paragraph here -->
+This section takes a step beyond configuration and shows how to execute rulesets
+on the remote machines.
+
+<P>
+<H2><A NAME="ss4.1">4.1 Using the Command Line</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+The command line can be ran interactively or in batch mode.  Running interactively,
+you will be able to enter password information, select hosts, and modify the
+current configuration.  By default rover will execute in interactive mode, prompting
+you for your password(s).  Other switches that force interactive modes are:
+
+<BLOCKQUOTE>
+  <UL>
+    <LI><B>-s or --shell</B>: Enter built-in shell</LI>
+    <LI><B>-p or --pick</B>: Interactively pick hosts</LI>
+  </UL>
+</BLOCKQUOTE>
+
+When entering password information from the command line, you can enter as many
+passwords as you like.  Press enter, leaving the entry blank, in order to finish
+entering passwords.<BR><BR>
+
+In order to avoid being prompted, and run in batch mode, you
+must not use any of the above switches and also specify the following:
+
+<BLOCKQUOTE>
+  <UL>
+    <LI><B>--no-auth</B>: Do not prompt for authentication</LI>
+  </UL>
+</BLOCKQUOTE>
+
+Here is an example of running rover in batch mode.  This example selects the Ruleset
+Unix_Uptime, specifies there be no password prompting, no banner, and use verbose output:
+
+<BLOCKQUOTE>
+  <PRE>
+$ rover -r Unix_Uptime --no-auth --no-banner -v
+atlantis:       Begining execution
+valhalla:       Begining execution
+hades:          Begining execution
+eldorado:       Begining execution
+valhalla:       running execute(uptime...)
+hades:          running execute(uptime...)
+atlantis:       running execute(uptime...)
+eldorado:       running execute(uptime...)
+atlantis:       Done
+valhalla:       Done
+hades:          Done
+shangri-la:     Begining execution
+eldorado:       Done
+olympus:        Begining execution
+shangri-la:     running execute(uptime...)
+olympus:        running execute(uptime...)
+shangri-la:     Done
+olympus:        Done
+
+No login failures recorded!
+
+Finished. Elapsed time: 5 seconds.
+
+  </PRE>
+</BLOCKQUOTE>
+
+<P>
+<H2><A NAME="ss4.2">4.2 Using the Graphical Interface</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+When using the graphical interface, you will have to enter your password information manually.
+To do this, from the main window select File, then Set Password.  You will be able to enter
+passwords for your username, or root, in case you specified logging in as root.<BR><BR>
+
+Type in passwords in the text boxes, and click the Add button to included them.  A running count
+of how many passwords you have entered is displayed for both users.  Below is a screenshot
+of the password window:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen5.jpg">
+</CENTER><BR><BR>
+
+When your ready to run Rover, select File from the main menu, then Run Rover.  The following
+window will then be displayed:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen6.jpg">
+</CENTER><BR><BR>
+
+From this window, you can control whether or not the commands need to be ran as root.
+You can also override the configured rulesets by using the "Quick Command" feature.
+See <A HREF="Rover-QuickStart-5.html">Using Rover Effectively</A> for more details.<BR><BR>
+
+When your ready to run, click the "Run" button.  A progress bar and cancel button will
+appear durring the run.  Afterwards, each machine that ran will appear in either the
+Success or Failure window.  You can view the status of each machine by clicking on
+the name within the Success or Failure window.  A new window will appear with information
+about the run:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen7.jpg">
+</CENTER><BR><BR>
+
+In the above example, the host "atlantis" was selected.  We can see that the command 
+"execute(uptime)" was ran successfully.  We also have the option of viewing the log
+file for this run.
+
+<HR>
+<!-- ----------------------------------------------------------------------------- -->
+<A HREF="Rover-QuickStart-5.html">Next</A>
+<A HREF="Rover-QuickStart-3.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>

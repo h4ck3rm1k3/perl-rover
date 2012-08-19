@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <TITLE>Rover Quick Start Guide: Using Rover Effectively</TITLE>
+</HEAD>
+
+<BODY>
+Next
+<A HREF="Rover-QuickStart-4.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>
+
+<HR>
+<H2><A NAME="s5">5. Using Rover Effectively</A></H2>
+
+<P>
+<!-- title paragraph here -->
+Rover can be a powerful tool if used appropriately.  This section
+suggests methods for getting the most our of Rover.
+
+<P>
+<H2><A NAME="ss5.1">5.1 Expect Prompt Matching</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+At the core of every Expect program is matching for a users' prompt.
+This allows the program to realize the login process has succeeded, or
+that a command is finished running.  Within Rover this is also the case.<BR><BR>
+
+By default, Rover uses the following regular expression string to match
+the shell prompt:
+
+<BLOCKQUOTE>
+  <CODE>
+    '[&gt;#\$] $'
+  </CODE>
+</BLOCKQUOTE>
+
+This is usually sufficient for most user prompts, including the root user.
+However, sometimes the default will not work and must be changed.  If you
+are getting profile errors, you may need to manually log into that host
+and check or adjust the prompt.<BR><BR>
+
+If you need to change the prompt string, adjust the $Rover::user_prompt
+variable from within the GUI, command line shell, or edit the main config
+file directly.
+
+<P>
+<H2><A NAME="ss5.2">5.2 Searching Logs</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+After running Rover accross many hosts, it may be necessary to search
+through the logs in order to find the results.  Rover provides a feature
+to do this from both the command line and GUI.<BR><BR>
+
+When using the search feature, regular expression matching applies to each
+line of the log file.  All matched lines will be returned with the name of
+the host it was found on.  The following command line example shows the
+result of a search for output of the uptime command:
+
+<BLOCKQUOTE>
+  <CODE>
+    $ rover -S 'up [0-9]+ day'<BR>
+    atlantis,  2:41pm  up 6 day(s),  4:33,  11 users,  load average: 0.04, 0.03, 0.02<BR>
+    valhalla,  2:41pm  up 6 day(s),  4:33,  9 users,  load average: 0.04, 0.03, 0.02<BR>
+    hades,  2:41pm  up 6 day(s),  4:33,  11 users,  load average: 0.05, 0.03, 0.02<BR>
+    eldorado,  2:41pm  up 6 day(s),  4:33,  10 users,  load average: 0.05, 0.03, 0.02<BR>
+    olympus,  2:41pm  up 6 day(s),  4:33,  9 users,  load average: 0.08, 0.04, 0.03<BR>
+    shangri-la,  2:41pm  up 6 day(s),  4:33,  9 users,  load average: 0.08, 0.04, 0.03<BR>
+  </CODE>
+</BLOCKQUOTE>
+
+From the GUI, you can search the logs from the run window by selecting Logs
+from the menubar, then Search.  You also have the option of cleaning the logs
+from this menu.  On some systems control M characters are appended to the
+end of each line, this option removes those characters from all run logs.<BR><BR>
+
+Here is an example of using the search function within the GUI:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen8.jpg">
+</CENTER><BR><BR>
+
+You can save the results to an text file from this window as well.  The file will
+contain the hostname, followed by a comma, followed by the actual line that matched
+the search.<BR><BR>
+
+
+<P>
+<H2><A NAME="ss5.3">5.3 Quck Commands</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+Quick commands are handy if you only need to execute one command.  Using the quick
+command feature, you will not have to create a ruleset.  This option is available
+from the command line as well as the GUI.<BR><BR>
+
+Here is an example of using the quick command feature from the command line:
+
+<BLOCKQUOTE>
+  <CODE>
+    <PRE>
+$rover -q 'uptime' --no-auth
+
+Running rulesets:
+    ALL: Rover_Quick_Ruleset
+
+    User:  babueter
+    Root:  No
+    Hosts: 6
+
+atlantis:       Begining execution
+valhalla:       Begining execution
+hades:          Begining execution
+eldorado:       Begining execution
+atlantis:       running execute(uptime...)
+valhalla:       running execute(uptime...)
+hades:          running execute(uptime...)
+eldorado:       running execute(uptime...)
+atlantis:       Done
+valhalla:       Done
+hades:          Done
+shangri-la:     Begining execution
+eldorado:       Done
+olympus:        Begining execution
+olympus:        running execute(uptime...)
+shangri-la:     running execute(uptime...)
+olympus:        Done
+shangri-la:     Done
+
+No login failures recorded!
+
+Finished. Elapsed time: 6 seconds.
+
+    </PRE>
+  </CODE>
+</BLOCKQUOTE>
+
+From the GUI, the main run window has a quick command option available.  The
+following example shows the quick command being used:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen9.jpg">
+</CENTER><BR><BR>
+
+<FONT SIZE=+1><B>HINT:</B></FONT> Using shell tests and command exit status
+can provide an easy way to scan a large number of machines quickly.<BR><BR>
+
+Here are several examples:
+
+<BLOCKQUOTE>
+  <TABLE BORDER=0 CELLPADDING=2 CELLSPACING=0>
+    <TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Quick&nbsp;Command:</B></TD>
+      <TD VALIGN=TOP><CODE>[ -f "/some/filename" ] && echo FILE EXISTS</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Search:</B></TD><TD VALIGN=TOP><CODE>^FILE.EXISTS</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Description:</B></TD><TD VALIGN=TOP>Search for the existance of "/some/filename".</TD>
+    </TR>
+  </TABLE><BR><BR>
+
+  <TABLE BORDER=0 CELLPADDING=2 CELLSPACING=0>
+    <TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Quick&nbsp;Command:</B></TD>
+      <TD VALIGN=TOP><CODE>pgrep PROCNAME || echo NOT RUNNING</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Search:</B></TD><TD VALIGN=TOP><CODE>^NOT.RUNNING</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Description:</B></TD><TD VALIGN=TOP>
+        Check to see if process PROCNAME is running. Search will return machines
+        which do not have the process running.  See "man pgrep" for details on its' usage.
+      </TD>
+    </TR>
+  </TABLE><BR><BR>
+
+  <TABLE BORDER=0 CELLPADDING=2 CELLSPACING=0>
+    <TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Quick&nbsp;Command:</B></TD>
+      <TD VALIGN=TOP><CODE>who | wc -l | awk '{print "USERS: " $1}'</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Search:</B></TD><TD VALIGN=TOP><CODE>^USERS:</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Description:</B></TD><TD VALIGN=TOP>Counts the number of users currently logged on.</TD>
+    </TR>
+  </TABLE><BR><BR>
+
+  <TABLE BORDER=0 CELLPADDING=2 CELLSPACING=0>
+    <TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Quick&nbsp;Command:</B></TD>
+      <TD VALIGN=TOP><CODE>vmstat 5 2 | tail -1 | awk '$NF-1 < 10 {print "CPU: " 100-$(NF-1)}'</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Search:</B></TD><TD VALIGN=TOP><CODE>^CPU:</CODE></TD>
+    </TR><TR>
+      <TD VALIGN=TOP ALIGN=RIGHT><B>Description:</B></TD><TD VALIGN=TOP>
+        Returns servers that have a CPU utilization above 90%.
+        The vmstat command usage may vary from OS to OS.
+      </TD>
+    </TR>
+  </TABLE><BR><BR>
+
+<!--
+  <TABLE BORDER=0 CELLPADDING=2 CELLSPACING=0>
+    <TR>
+      <TD VALIGN=TOP><B>Command:</B></TD><TD VALIGN=TOP><CODE> </CODE></TD>
+    <TR></TR>
+      <TD VALIGN=TOP><B>Search:</B></TD><TD VALIGN=TOP><CODE> </CODE></TD>
+    <TR></TR>
+      <TD VALIGN=TOP><B>Description:</B></TD><TD VALIGN=TOP> </TD>
+    </TR>
+  </TABLE><BR><BR>
+-->
+
+
+</BLOCKQUOTE>
+
+<P>
+<H2><A NAME="ss5.4">5.4 Writing Modules</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+Rover modules are written exactly like perl modules, with certain expectations.
+For ruleset modules, it is expected that some function will be exported for use
+within rulesets.<BR><BR>
+
+In order to demonstrate what a module can do, we will use this fictitous example:
+We want to create a Rover module that will allow us to send output to the more command.<BR><BR>
+
+This is obviously not usefull, however it will demonstrate automating a normally
+interactive command.  Here is the module Pager.pm, which can be used with Rover:
+
+<BLOCKQUOTE STYLE="background-color: #E6E6E6">
+  <PRE>
+#******************************************************************
+#
+# Pager - an example Rover module
+#
+#******************************************************************
+
+package Pager;
+use Exporter;
+
+@Pager::ISA = qw( Exporter );
+@Pager::EXPORT = qw( page );
+
+BEGIN {
+  Rover::register_module("Pager");
+}
+
+sub page {
+  my ($command, $exp_obj) = @_;
+
+  $exp_obj->send("$command | more \n");
+  my $result = $exp_obj->expect(5,
+        [ '\-\-More\-\-', sub { my $fh = shift;
+                select(undef,undef,undef,0.5);
+                $fh->send(" ");
+                exp_continue; } ],
+        '-re', $Rover::user_prompt, );
+
+  return($result);
+}
+
+1;
+  </PRE>
+</BLOCKQUOTE>
+
+From this example, we can see that the command page() is exported.  When Using this
+in Rover, page() will be available for use within rulesets.<BR><BR>
+
+To use page(), simply supply it with a UNIX command, it will send the output to the
+more command and enter a space each time '--More--' is displayed on the terminal.<BR><BR>
+
+Using the command line, we can include Pager by copying Pager.pm to $HOME/.rover/contrib,
+and adding "use Pager;" to the GENERAL section of our config file.  This can also be done
+from the GUI by selecting Config from the main menu, then Modules.  Click "New" from the
+modules window, browse to the Pager.pm file and click OK.<BR><BR>
+
+Finally, here is an example of a ruleset using page():
+
+<BLOCKQUOTE>
+  <CODE>
+    Pager_Example:{<BR>
+      <DD>page(ps -ef);<BR>
+    };
+  </CODE>
+</BLOCKQUOTE>
+
+<HR>
+<!-- ----------------------------------------------------------------------------- -->
+Next
+<A HREF="Rover-QuickStart-4.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>

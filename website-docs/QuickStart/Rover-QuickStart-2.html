@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <TITLE>Rover Quick Start Guide: Title</TITLE>
+</HEAD>
+
+<BODY>
+<A HREF="Rover-QuickStart-3.html">Next</A>
+<A HREF="Rover-QuickStart-1.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>
+
+<HR>
+<H2><A NAME="s2">2. The Hosts List</A></H2>
+
+<P>
+<!-- title paragraph here -->
+This section will describe how to specify remote machines within Rover,
+how to store custom information about them, and how to select them for
+processing a Rover run.
+
+<P>
+<H2><A NAME="ss2.1">2.1 What is the Hosts List</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+Simply stated, a hosts list is a list of hostnames or IP addresses of remote
+machines.  It is the list that Rover uses to determine which machines to connect
+to in order to process a run.
+
+<P>
+<H2><A NAME="ss2.2">2.2 Creating the Hosts List</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+The default location for the hosts list is the file $HOME/.rover/hosts.txt.  Populating
+this file is the first thing that should be done prior to running Rover.  The easiest way
+to do this is to create the file by hand with your favorite editor.<BR><BR>
+
+The format for the file is one hostname/IP address per line.  A simple example is as follows:
+
+<BLOCKQUOTE>
+  <CODE>
+    atlantis<BR>
+    valhalla<BR>
+    hades<BR>
+    eldorado<BR>
+    shangri-la<BR>
+    olympus<BR>
+  </CODE>
+</BLOCKQUOTE>
+
+This list has six(6) hosts defined: atlantis, valahalla, hades, eldorado, shangri-la, and olympus.
+The hostnames were used in this example, it is expected that each name will resolve to some IP address.
+
+<P>
+<H2><A NAME="ss2.3">2.3 Storing Custom Fields</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+In many cases (especially within the GUI), it is helpful to store more information about a
+machine then the hostname/IP.  Rover allows for custom fields to be appended after the hostname
+using a comma seperated format.  The syntax is as follows:
+
+<BLOCKQUOTE>
+  <CODE>
+    &lt;HOSTNAME&gt;[,field 1[,...]]
+  </CODE>
+</BLOCKQUOTE>
+
+This will store the information in field 1, and any subsequent fields, in a global array that is
+available for reference to custom modules.  Primarily, this is usefull within the GUI, as you 
+will then be able to sort on these fields.  Here is an example:<BR><BR>
+
+<CENTER>
+  <IMG SRC="images/screen1.jpg">
+</CENTER><BR>
+
+In this example, our hosts list is as follows:
+
+<BLOCKQUOTE>
+  <CODE>
+    atlantis,Desktop,Workstation,Ubuntu<BR>
+    eldorado,Production,Server,Slackware<BR>
+    hades,Production,Server,Slackware<BR>
+    olympus,Production,Server,Slackware<BR>
+    shangri-la,Production,Server,Slackware<BR>
+    valhalla,Development,Server,Slackware<BR>
+  </CODE>
+</BLOCKQUOTE>
+
+<P>
+<H2><A NAME="ss2.4">2.4 Selecting Hosts</A>
+</H2>
+
+<P>
+<!-- sub title paragraph here -->
+By default, Rover uses all machines within the hosts list.  From the command line there are two options
+for selecting a subset of machines.  The first is to use an alternative hosts file with the "--hosts-file"
+command line switch.  The second is to pick them interactively with the "-p|--pick" command line option.
+See "man rover" for more details.<BR><BR>
+
+From the GUI, no hosts are selected by default.  You can select them by left clicking on the appropriate
+row with your mouse.  Use the Ctrl and Shift keys to select multiple hosts.
+
+
+<HR>
+<!-- ----------------------------------------------------------------------------- -->
+<A HREF="Rover-QuickStart-3.html">Next</A>
+<A HREF="Rover-QuickStart-1.html">Previous</A>
+
+<A HREF="Rover-QuickStart.html#toc1">Contents</A>
