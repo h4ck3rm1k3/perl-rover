@@ -1,4 +1,4 @@
-#!perl
+#!/usr/bin/perl
 #****************************************************************************
 # rover - Command line interface to Rover perl module
 #
