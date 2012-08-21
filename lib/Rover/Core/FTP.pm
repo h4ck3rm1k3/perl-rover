@@ -8,6 +8,8 @@
 package Rover::Core::FTP;
 use Exporter;
 use Net::FTP;
+use Data::Dumper;
+use Carp qw(cluck confess);
 
 BEGIN {
   our $VERSION = "1.00";
@@ -40,6 +42,17 @@ sub determine_ftp_method {
  # By protocol priority, check the port availability and set
  # the routine name accordingly
   my $ftp_method = undef;
+
+
+  if (  $host_obj->{_sshport} )  {
+      cluck "setting port  ". Dumper($host_obj);
+      $Rover::Core::FTP::method_ports{"ssh"}=$host_obj->{_sshport};     
+  }
+  else
+  {
+      confess "setting port  ". Dumper($host_obj);
+  }
+
   foreach my $proto ( @preferred_methods ) {
     if ( Rover::Core::scan_open_port($host_obj->hostname, $Rover::Core::FTP::method_ports{$proto}) ) {
       $ftp_method = $proto ."_". $method ;
@@ -151,12 +164,20 @@ sub sftp_setup {
   my $host_obj = $self->host($host);
 
   my $exp_obj = new Expect;
-  if ( $Rover::Core::FTP::login_as_self ) {
-    $exp_obj->spawn("sftp ". $host_obj->hostname);
 
-  } else {
-    $exp_obj->spawn("sftp ". $host_obj->username() ."@". $host_obj->hostname);
+#  cluck Dumper($host_obj);
+
   
+  if (  $host_obj->{_sshport} )  {
+#      cluck "setting port  ". Dumper($host_obj);
+      $Rover::Core::FTP::method_ports{"ssh"}=$host_obj->{_sshport};     
+  }
+  my $ssh_port = $Rover::Core::FTP::method_ports{"ssh"};
+  my $sftp="sftp -P $ssh_port ";
+  if ( $Rover::Core::FTP::login_as_self ) {
+    $exp_obj->spawn($sftp . $host_obj->hostname);
+  } else {
+    $exp_obj->spawn($sftp . $host_obj->username() ."@". $host_obj->hostname);  
   }
 
   my @passwords = $host_obj->passwords();
@@ -279,6 +300,8 @@ sub ftp_setup {
   my $self = shift;
   my $host = shift;
   my $host_obj = $self->host($host);
+
+  cluck Dumper($host_obj);
 
   my $ftp_obj = Net::FTP->new($host_obj->hostname());
 

@@ -6,7 +6,7 @@
 
 package Rover::Core;
 use Exporter;
-
+use Carp qw(cluck);
 use Rover::Core::FTP;
 our $VERSION = "1.00";
 
@@ -64,6 +64,9 @@ sub execute {
 
   my $host_obj = $self->host($host) || return(0);
 
+  warn "execute($command)\n";
+  cluck "execute($command)\n";
+
   $self->pinfo($host, "execute($command)\n");
   my $EOL = "\n";
   if ( $host_obj->os eq "Windows" ) {
@@ -75,6 +78,8 @@ sub execute {
   select(undef, undef, undef, 0.25);
 
   my $result = $host_obj->shell->expect($Rover::Core::command_timeout, '-re', $self->user_prompt);
+
+  warn "Error: $host result : $result\n";
 
   if ( ! $result ) {
     $self->pinfo($host, "Error: execute: timed out running command, exiting with failure\n");

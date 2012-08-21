@@ -16,13 +16,13 @@ use lib ("$ENV{HOME}/.rover/contrib");
 use Rover::Shell_Routines;
 use Rover::Host;
 use Rover::Ruleset;
-
+use Data::Dumper;
 use threads;
-
+use Rover::CoreExtension;
 use strict 'subs';
 use strict 'vars';
 use warnings;
-
+use Carp qw(cluck);
 our @OS_LIST = (
 	'ALL',
 	'AIX',
@@ -86,7 +86,6 @@ sub new {
   clear($self);
   register_module($self, "Rover::Core");
   register_module($self, "Rover::CoreExtension");
-
   return bless $self, $class;
 }
 
@@ -775,6 +774,54 @@ sub ftp_login {
       $return = 0;
       next;
     }
+    cluck Dumper($host_obj);
+    if ( $host_obj->ftp_method_used() eq "sftp" ) {
+      $host_obj->ftp->log_file($self->logs_dir() ."/$host.log");
+    }
+    $successful_login_count++;
+    $return = 1;
+  }
+
+  if ( @hosts == 1 ) {
+    return($return);
+  }
+  return($successful_login_count);
+}
+
+
+sub sftp_login {
+  my $self = shift;
+  my @hosts = @_;
+
+  if ( ! @hosts ) {
+    @hosts = $self->host();
+  }
+
+  my $successful_login_count = 0;
+  my $return;
+  foreach my $host ( @hosts ) {
+    my $host_obj = $self->host($host);
+
+    $self->pdebug("DEBUG:\t\tGetting SFTP shell for $host (". $host_obj->hostname() .")\n");
+
+   # We're not going to test the FTP object, its just safer to open a new one
+    my $ftp_method = Rover::Core::FTP::determine_ftp_method( $host_obj, "setup" );
+    if ( ! $ftp_method ) {
+      $return = 0;
+      next;
+    }
+
+   # After finding the ftp_method to use, run it and capture the status
+    $self->pdebug("DEBUG:\t\tSetting up SFTP object for ". $host_obj->hostname ." using $ftp_method\n");
+    $return = &$ftp_method($self, $host);
+
+   # Return 0 if failed, set up log file if success
+    if ( $return <= 0 ) {
+      $self->pdebug("DEBUG:\t\tFailed getting FTP object for '$host', return code '$return'\n");
+      $return = 0;
+      next;
+    }
+#    cluck Dumper($host_obj);
     if ( $host_obj->ftp_method_used() eq "sftp" ) {
       $host_obj->ftp->log_file($self->logs_dir() ."/$host.log");
     }
@@ -832,7 +879,7 @@ sub getroot {
 sub register_module {
   my ($self, $module_name) = @_;
 
-  return (0) if ! $module_name;
+  confess  (0) if ! $module_name;
 
   my $module_load = "use $module_name;" ;
   eval $module_load ;
@@ -1053,7 +1100,15 @@ sub run_rulesets {
         my $ruleset = $self->ruleset($ruleset_name);
 
         if ( grep( /^[gp][eu]t_file/, $ruleset->list()) ) {
-          $result = $self->ftp_login($host);
+
+#	    cluck "Help" . Dumper($self);
+	    my $hostobj=$self->{_host_objects}{$host};
+	    if ( $hostobj->ftp_method_used() eq "sftp" ) {
+		$result = $self->sftp_login($host);
+	    } else {
+		$result = $self->ftp_login($host);
+	    }
+
           last;
         }
       }
@@ -1081,6 +1136,7 @@ sub run_rulesets {
         next if ! $host_obj->shell();
 
         $self->pdebug("DEBUG:\t\tThreading host ". $host_obj->hostname .", thead id $t\n");
+	warn "Going to exec ruleset :". join ("|",@rulesets);
         $thread_ids[$t] = threads->new("exec_thread", $self, $host_obj->hostname, $get_root, @rulesets);
       }
 
@@ -1163,11 +1219,14 @@ sub exec_thread {
       }
     }
 
+#    cluck "Ruleset" . Dumper($ruleset_obj);
+
     foreach my $ruleset_command ( $ruleset_obj->commands ) {
       $rover->pdebug("DEBUG:\t\tRunning ruleset command on '$host': @{$ruleset_command}\n");
 
       my $command = $ruleset_command->[0];
       my $args = $ruleset_command->[1];
+#      cluck "cmd:$command host:$host args:$args";
 
       $result = $rover->$command($host, $args);
       last if ! $result;

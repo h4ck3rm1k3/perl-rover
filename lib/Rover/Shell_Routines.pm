@@ -7,7 +7,8 @@
 
 package Rover::Shell_Routines;
 use Exporter;
-
+use Data::Dumper;
+use Carp qw(cluck);
 $Expect::Log_Stdout = 0;
 
 BEGIN {
@@ -123,11 +124,21 @@ sub shell_by_ssh {
   return 0 if ! $host;
 
   my $host_obj = $self->host($host) || return 0;
+#  warn "starting $host_obj->hostname";
+#  cluck "starting " . Dumper($host_obj);
 
   $self->pdebug("DEBUG:\tShell_Routine ssh attempting to init shell for '". $host_obj->hostname ."'\n");
-  if ( ! Rover::Core::scan_open_port($host,"22") ) {
-    $self->pdebug("DEBUG:\t\t$host: no ssh port opened\n");
-    return(-3);
+
+  my $sshport="22";
+  if ($host_obj->{_sshport})
+  {
+      $sshport=$host_obj->{_sshport};
+  }
+
+
+  if ( ! Rover::Core::scan_open_port($host,$sshport) ) {
+      $self->pdebug("DEBUG:\t\t$host: no ssh port opened\n");
+      return(-3);
   }
 
   my $ssh_command = $Rover::Shell_Routines::ssh_command ;
@@ -150,6 +161,10 @@ sub shell_by_ssh {
   if ( $1 >= 3.9 ) {
     $ssh_command .= " ". $Rover::Shell_Routines::openssh_args ;
   }
+
+  # adding ssh port
+  $ssh_command .= " -p $sshport" ;
+  
   $ssh_command .= " -l ". $host_obj->username ." ". $host_obj->hostname;
   $self->pdebug("DEBUG:\t\tssh command compiled: '$ssh_command'\n");
 

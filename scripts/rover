@@ -158,7 +158,7 @@ sub usage {
   print "                 Specify which ruleset to run.  Multiple rulesets are allowed.\n";
   print "\n";
   print "  -q|--quick-command <command>\n";
-  print "                 Run quick command.  Puts supplied string insude\n";
+  print "                 Run quick command.  Puts supplied string inside\n";
   print "                 an execute() ruleset command, so you dont need to\n";
   print "\n";
   print "  --config-file <file>\n";
