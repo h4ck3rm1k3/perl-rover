@@ -50,7 +50,7 @@ sub determine_ftp_method {
   }
   else
   {
-      confess "setting port  ". Dumper($host_obj);
+      #confess "setting port  ". Dumper($host_obj);
   }
 
   foreach my $proto ( @preferred_methods ) {
