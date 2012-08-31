@@ -15,15 +15,16 @@ sub put_file_from_home {
 #
   my ($self, $host, $args) = @_;
   my ($local_file,$remote_file) = split(",",$args.",");
-  my $home = $ENV{HOME};
+  my $home = $ENV{HOME} . '/';
   my $old=$local_file;
 #  warn "Local was \"$local_file\" and home was $home";
-  my $x= $local_file =~ s!\${HOME}!$home!i;
+  my $x= $local_file =~ s!\${HOME}\/!$home!i;
 #  warn "Local now \"$local_file\" for $x";
 
   $x=$local_file =~ s!~/!$home!i;
   warn "Local now \"$local_file\" and was ${old}";
-  my $result = Rover::Core::put_file($self,$host,join(",",$local_file,$remote_file)); # send to original 
-  
+  warn "going to send " . join ("|", $host,"$local_file\,$remote_file");
+  my $result = Rover::Core::put_file($self,$host,"$local_file\,$remote_file"); # send to original 
+  warn "result was ${result}";
   return($result);
 }

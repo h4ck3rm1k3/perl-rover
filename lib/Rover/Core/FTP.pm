@@ -70,6 +70,7 @@ sub determine_ftp_method {
 ############################################################
 sub sftp_put {
   my ($host_obj, $local_file, $remote_file) = @_;
+  warn "SENDING: sftp put localfile:$local_file remote:$remote_file\n";
 
   if ( ! $host_obj->ftp() ) {
     if ( ! sftp_setup($host_obj) ) {
@@ -78,10 +79,17 @@ sub sftp_put {
   }
 
   my $exp_obj = $host_obj->ftp();
+   # $exp_obj->debug(100);
+   # $exp_obj->log_group( 1 );
+   # $exp_obj->log_user(1 );
+   # $exp_obj->log_file(sub { cluck @_; } );
+
+  warn "SENDING:put $local_file $remote_file\n";
   $exp_obj->send("put $local_file $remote_file\n");
   select(undef, undef, undef, 0.25);
 
   my $got_file = 1;
+
   $exp_obj->expect($Rover::File_Transfer::transfer_timeout,
         [ '^Couldn\'t get handle', sub { $got_file = 0; } ],
         [ '^Fetching ', sub { $got_file = 1; } ],
@@ -172,13 +180,16 @@ sub sftp_setup {
 #      cluck "setting port  ". Dumper($host_obj);
       $Rover::Core::FTP::method_ports{"ssh"}=$host_obj->{_sshport};     
   }
-  my $ssh_port = $Rover::Core::FTP::method_ports{"ssh"};
+  my $ssh_port = $Rover::Core::FTP::method_ports{"ssh"} || 22;
   my $sftp="sftp -P $ssh_port ";
+  my $cmd='';
   if ( $Rover::Core::FTP::login_as_self ) {
-    $exp_obj->spawn($sftp . $host_obj->hostname);
+      $cmd=  $sftp . $host_obj->hostname;
   } else {
-    $exp_obj->spawn($sftp . $host_obj->username() ."@". $host_obj->hostname);  
+      $cmd = $sftp . $host_obj->username() ."@". $host_obj->hostname;  
   }
+  warn "going to run sftp command: $cmd";
+  $exp_obj->spawn($cmd);
 
   my @passwords = $host_obj->passwords();
   if ( ! @passwords ) { @passwords = $self->user_credentials; }
@@ -188,6 +199,11 @@ sub sftp_setup {
   my $logged_in = 1;
   my $failure_code;
   my $failure_count = 0;
+
+  # $exp_obj->debug(100);
+  # $exp_obj->log_group( 1 );
+  # $exp_obj->log_user(1 );
+  # $exp_obj->log_file(sub { cluck @_; } );
 
   $exp_obj->expect($Rover::Core::FTP::login_timeout,
         [ qr'key fingerprint', sub { my $fh = shift;

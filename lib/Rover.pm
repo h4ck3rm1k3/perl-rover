@@ -73,7 +73,7 @@ our %DEFAULT = (
     _gladepath => "",
     _config_file => "$ENV{HOME}/.rover/config",
     _logs_dir => "$ENV{HOME}/.rover/logs",
-    _debug => 9,
+    _debug => 0,
 );
 
 sub new {
@@ -727,7 +727,15 @@ sub login {
                   my $fh = shift;
                   select(undef, undef, undef, 0.25);
                   $fh->send("^M"); } ],
-          [ 'Linux', sub { $os_type = 'Linux'; exp_continue; } ],
+          [ 'Linux', sub { 
+#Linux mdupont-Aspire-7750G 2.6.35-22-generic #35-Ubuntu SMP Sat Oct 16 20:45:36 UTC 2010 x86_64 GNU/Linux
+	      warn "Got a linux server";
+	      $os_type = 'Linux'; 
+	      #exp_continue; 
+	    } 
+	  ],
+			       
+
           [ timeout => sub { $self->pwarn($host_obj->hostname .":\tWarning: uname -a timed out, server may be running too slow\n"); } ],
           '-re', $self->user_prompt, );
   

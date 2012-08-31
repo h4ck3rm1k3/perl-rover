@@ -117,7 +117,10 @@ sub put_file {
 
  # We put a comma on the end in case the user doesnt supply a remote file name
  #
+  warn "Put args: $args";
   my ($local_file,$remote_file) = split(",",$args.",");
+  warn "Local : $local_file";
+  warn "Remote : $remote_file";
   $local_file =~ s/^[\t\s]*// ;
   $remote_file =~ s/^[\t\s]*// ;
 

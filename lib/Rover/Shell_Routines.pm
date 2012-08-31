@@ -46,6 +46,11 @@ sub expect_login {
 
   $self->pdebug("DEBUG:\t\texpect_login attempting to gain shell for user $user with ". @user_credentials ." passwords\n");
   $logged_in = 1;
+  # $exp_obj->debug(100);
+  # $exp_obj->log_group( 1 );
+  # $exp_obj->log_user(1 );
+  # $exp_obj->log_file(sub { cluck @_; } );
+
   $exp_obj->expect($self->login_timeout,
                   [ 'yes\/no', sub { my $fh = shift;
                         print $fh "yes\n";
@@ -58,11 +63,19 @@ sub expect_login {
                         my $fh = shift;
                         print $fh "$user\n";
                         exp_continue; } ],
-                  [ 'Connection timed out', sub { $logged_in = 0; $failure_code = -2; } ],
+
+
+                  [ 'Connection timed out', sub { 
+
+		      $logged_in = 0; $failure_code = -2; } ],
                   [ 'not allowed', sub { $logged_in = 0; $failure_code = 0; } ],
                   [ 'buffer_get', sub { $logged_in = 0; $failure_code = 0; } ],
                   [ 'ssh_exchange_identification', sub { $logged_in = 0; $failure_code = 0; } ],
-                  [ 'assword:', sub { $pass = shift @user_credentials;
+                
+		   #mdupont@localhost's password:
+		   [ 'password:', sub { 
+		       warn "Got the password prompt:";
+		       $pass = shift @user_credentials;
                         if ( ! $pass ) {
                           $logged_in = 0;
                           $failure_code = -1;
@@ -91,14 +104,27 @@ sub expect_login {
                   [ 'ew password', sub { $logged_in = 0; $failure_code = -1; } ],
                   [ 'Challenge', sub { $logged_in = 0; $failure_code = -1; } ],
                   [ 'Microsoft Windows', sub { $logged_in = 1; $self->user_prompt = '\\033\[2'; } ],
-                  [ eof => sub { if ($spawn_ok == 1) {
+
+                  [ 'Last login:', sub { 
+		      warn "Got last login";
+		      $logged_in = 1; 
+
+		    } ],	   
+		   
+
+                  [ eof => sub { 
+
+		       warn "Got eof";
+		      if ($spawn_ok == 1) {
                           $logged_in = 0;
                           $failure_code = -1;
                         } else {
                           $logged_in = 0;
                           $failure_code = -2;
                         } } ],
-                  [ timeout => sub { if ( ! $changed_prompt && $spawn_ok ) {
+                  [ timeout => sub { 
+		       warn "Got timeout";
+		      if ( ! $changed_prompt && $spawn_ok ) {
                           $changed_prompt = 1;
                           $exp_obj->send("PS1='$self->user_prompt_force'\n\n");
                           #select(undef,undef,undef,0.25);
