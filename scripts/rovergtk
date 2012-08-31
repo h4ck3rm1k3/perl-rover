@@ -50,13 +50,19 @@ if ( ! $getopts_result ) {
   print "Usages: $0 [--config-file <filename>]\n";
   exit (0);
 }
+warn "rover_config_file : $rover_config_file";
 $rover->config_file($rover_config_file);
 $rover->load();
 
-#######################################################################
-# Import glade XML and connect perl objects
-#
-our $gladexml_main = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "main");
+our $siteprefix = $rover->{"_siteprefix"} || $Config{"siteprefix"};
+our $gladepath  = $rover->{"_gladepath"}  || $siteprefix."bin";
+our $gladefile  = $gladepath . "/rovergtk.glade";
+
+warn "site prefix : " . $siteprefix;
+
+warn "gladefile : $gladefile";
+
+our $gladexml_main = Gtk2::GladeXML->new($gladefile, "main");
 $gladexml_main->signal_autoconnect_from_package();
 
 my $main = $gladexml_main->get_widget("main");
@@ -267,7 +273,7 @@ sub menu_hosts_new {
   my $slist = $data->[0];
   my $rover = $data->[1];
 
-  my $gladexml = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "host_edit");
+  my $gladexml = Gtk2::GladeXML->new($gladefile, "host_edit");
   $gladexml->signal_autoconnect_from_package();
 
   my $host_edit = $gladexml->get_widget("host_edit");
@@ -382,7 +388,7 @@ sub menu_hosts_delete {
 sub host_edit_window {
   my ($slist, $path, $column, $rover) = @_;
 
-  my $gladexml = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "host_edit");
+  my $gladexml = Gtk2::GladeXML->new($gladefile, "host_edit");
   $gladexml->signal_autoconnect_from_package();
 
   my $host_edit = $gladexml->get_widget("host_edit");
@@ -458,7 +464,7 @@ sub ruleset_edit_window {
   $slist->get_selection->unselect_all;
   $main_rulesets_preview_slist->parent->hide_all(); # workaround for broken unselect_all signal
 
-  my $gladexml = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "ruleset_edit");
+  my $gladexml = Gtk2::GladeXML->new($gladefile, "ruleset_edit");
   $gladexml->signal_autoconnect_from_package();
 
   my $ruleset_menu_save = $gladexml->get_widget("ruleset_menu_save");
@@ -702,7 +708,7 @@ sub run_rover {
     $dialog->show_all;
     return;
   }
-  my $gladexml_run = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "run_window");
+  my $gladexml_run = Gtk2::GladeXML->new($gladefile, "run_window");
   $gladexml_run->signal_autoconnect_from_package();
 
   my $run_window = $gladexml_run->get_widget("run_window");
@@ -1136,7 +1142,7 @@ sub run_rover {
 	} else {
 	 # We are the parent process, set up the gtk status window and watch the pipe
 	 #
-	  my $gladexml_run_status = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "run_status_window");
+	  my $gladexml_run_status = Gtk2::GladeXML->new($gladefile, "run_status_window");
           $gladexml_run_status->signal_autoconnect_from_package();
 	  my $run_status_window = $gladexml_run_status->get_widget("run_status_window");
 	  $run_status_window->signal_connect("delete_event" => sub {
@@ -1222,7 +1228,7 @@ sub run_rover {
 
 		my $r = $data->[1];
 
-		my $gladexml_run_status_search = Gtk2::GladeXML->new($Config{"siteprefix"}."/bin/rovergtk.glade", "run_status_search");
+		my $gladexml_run_status_search = Gtk2::GladeXML->new($gladefile, "run_status_search");
 		$gladexml_run_status_search->signal_autoconnect_from_package();
 
 		my $run_status_search = $gladexml_run_status_search->get_widget("run_status_search");
@@ -1675,7 +1681,7 @@ sub help_window {
 	$perldoc_window->destroy();
   }, $perldoc_window);
 
-  open(PERLDOC, $Config{"siteprefix"}."/bin/perldoc -t $module 2>&1 |");
+  open(PERLDOC, $siteprefix."/bin/perldoc -t $module 2>&1 |");
   my $perldoc_buffer = $perldoc_text->get_buffer();
   while (<PERLDOC>) {
     $perldoc_buffer->insert($perldoc_buffer->get_end_iter, $_);

@@ -5,14 +5,11 @@
 #***************************************************************************
 package Rover;
 require 5.8.0;
-
 our $VERSION = "3.0";
-
 use Config;
 use Expect;
 use Carp;
 use lib ("$ENV{HOME}/.rover/contrib");
-
 use Rover::Shell_Routines;
 use Rover::Host;
 use Rover::Ruleset;
@@ -42,40 +39,41 @@ our @DEFAULT_LOGIN_METHODS = ("shell_by_ssh", "shell_by_telnet", "shell_by_rlogi
 our @DEFAULT_FTP_METHODS = ("sftp", "ftp");
 our @DEFAULT_ROOT_METHODS = ("get_root_by_su", "get_root_by_sudo");
 our %DEFAULT = (
-        _user => $ENV{'USER'},
-        _user_prompt => '[>#\$] $',
-        _user_prompt_force => '$ ',
-
-        _user_credentials => undef,
-        _root_credentials => undef,
-
-        _host_objects => undef,
-        _rulesets => undef,
-
-        _login_methods => undef,
-        _ftp_methods => undef,
-        _root_methods => undef,
-
-        _login_timeout => 7,
-        _max_threads => 4,
-
-        _registered_modules => undef,
-        _registered_rules => undef,
-        _registered_vars => undef,
-
-        _lastrun_num_hosts => 0,
-        _lastrun_num_succeed => 0,
-        _lastrun_num_completed => 0,
-        _lastrun_failed_password => 0,
-        _lastrun_failed_profile => 0,
-        _lastrun_failed_network => 0,
-        _lastrun_failed_ruleset => 0,
-        _lastrun_failed_getroot => 0,
-        _lastrun_failed_hosts => undef,
-
-        _config_file => "$ENV{HOME}/.rover/config",
-        _logs_dir => "$ENV{HOME}/.rover/logs",
-        _debug => 0,
+    _user => $ENV{'USER'},
+    _user_prompt => '[>#\$] $',
+    _user_prompt_force => '$ ',
+    
+    _user_credentials => undef,
+    _root_credentials => undef,
+    
+    _host_objects => undef,
+    _rulesets => undef,
+    
+    _login_methods => undef,
+    _ftp_methods => undef,
+    _root_methods => undef,
+    
+    _login_timeout => 7,
+    _max_threads => 4,
+    
+    _registered_modules => undef,
+    _registered_rules => undef,
+    _registered_vars => undef,
+    
+    _lastrun_num_hosts => 0,
+    _lastrun_num_succeed => 0,
+    _lastrun_num_completed => 0,
+    _lastrun_failed_password => 0,
+    _lastrun_failed_profile => 0,
+    _lastrun_failed_network => 0,
+    _lastrun_failed_ruleset => 0,
+    _lastrun_failed_getroot => 0,
+    _lastrun_failed_hosts => undef,
+    _siteprefix => "/usr/local/",
+    _gladepath => "",
+    _config_file => "$ENV{HOME}/.rover/config",
+    _logs_dir => "$ENV{HOME}/.rover/logs",
+    _debug => 9,
 );
 
 sub new {
@@ -229,7 +227,7 @@ sub load {
     if ( $conf_section ) {
      # Rover configuration section
      #
-      if ( $self->{"_".$option} && $value ) {
+      if ( exists($self->{"_".$option}) && $value ) {
         if ( $value =~ m/^\(.*?\)$/ ) {
           $value =~ s/^\([ 	]*// ;
           $value =~ s/[ 	]*\)$// ;
@@ -243,6 +241,11 @@ sub load {
           $self->{"_".$option} = $value;
         }
       }
+      else
+      {
+	  $self->pdebug("DEBUG:\tSkipping option : $option and value: $value \n");	
+      }
+      
     }
 
     if ( $modules_section ) {
